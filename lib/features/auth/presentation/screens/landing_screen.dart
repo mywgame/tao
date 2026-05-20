@@ -26,8 +26,7 @@ class _LandingScreenState extends State<LandingScreen> {
   // 🎯 इमेज पाथ डेटा - सिर्फ पहले कार्ड में 3D डैशबोर्ड इमेज आएगी
   final List<Map<String, String>> _sliderItems = [
     {
-      'title': 'Advanced Analytics Dashboard',
-      'desc': 'Real-time metrics for maximum performance.',
+    
       'image': 'assets/images/analytics_dashboard.png', // 👈 तुम्हारी 501x280 वाली इमेज भाई
     },
     {
