@@ -1,222 +1,175 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import '../../../../core/theme/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tao_boost/core/providers/referral_provider.dart';
 
-class MyTeamScreen extends StatefulWidget {
+class MyTeamScreen extends ConsumerWidget {
   const MyTeamScreen({super.key});
 
+  static const neonCyan = Color(0xFF00E5FF);
+  static const neonGreen = Color(0xFF00FF9F);
+  static const darkBackground = Color(0xFF0F172A);
+  static const cardBackground = Color(0xFF1E293B);
+  static const borderTextColor = Color(0xFF334155);
+
   @override
-  State<MyTeamScreen> createState() => _MyTeamScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 📡 लाइव टीम स्टेट सुनो
+    final teamMembers = ref.watch(referralProvider);
 
-class _MyTeamScreenState extends State<MyTeamScreen> {
-  final String referralCode = "TAO-BOOST-89X7";
-  final String referralLink = "https://taoboost.io/register?ref=TAO-BOOST-89X7";
+    // 🧮 स्टेट्स कैलकुलेशन
+    final totalMembers = teamMembers.length;
+    final activeMembers = teamMembers.where((m) => m.isActive).length;
+    final directReferrals = teamMembers.where((m) => m.role == 'Direct Referral').length;
 
-  // 📋 डमी टीम डेटा (असली ऐप में यह API से आएगा)
-  final List<Map<String, dynamic>> teamMembers = [
-    {"name": "Rahul Sharma", "level": "Level 1", "staked": "45.50 TAO", "status": "Active", "color": Colors.greenAccent},
-    {"name": "Ankit Verma", "level": "Level 1", "staked": "12.00 TAO", "status": "Active", "color": Colors.greenAccent},
-    {"name": "Vikram Singh", "level": "Level 2", "staked": "110.00 TAO", "status": "Active", "color": Colors.greenAccent},
-    {"name": "Amit Patel", "level": "Level 2", "staked": "0.00 TAO", "status": "Inactive", "color": Colors.redAccent},
-    {"name": "Suresh Raina", "level": "Level 3", "staked": "5.25 TAO", "status": "Active", "color": Colors.greenAccent},
-  ];
+    return Scaffold(
+      backgroundColor: darkBackground,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'MY GENEALOGY TEAM',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: neonCyan, letterSpacing: 1.5),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_add_alt_1_rounded, color: neonGreen, size: 22),
+            onPressed: () {
+              ref.read(referralProvider.notifier).registerNewUserWithReferral(
+                name: 'Rahul Verma',
+                enteredReferralCode: 'TAOBOOST777',
+                initialInvestment: '1500',
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('🎉 Rahul Verma को TAOBOOST777 कोड से डायरेक्ट टीम में जोड़ा गया!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 🎯 माई रेफ़रल कोड डिस्प्ले बॉक्स भाई
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: cardBackground,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: neonCyan.withOpacity(0.2), width: 1),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // 👈 'between' फिक्स होकर 'spaceBetween' हुआ भाई
+                children: [
+                  Text('YOUR REFERRAL CODE:', style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.bold)),
+                  Text('TAOBOOST777', style: TextStyle(color: neonCyan, fontSize: 16, fontWeight: FontWeight.w900, fontFamily: 'Courier')), // 👈 'black' फिक्स होकर 'w900' हुआ भाई
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
 
-  void _copyToClipboard(String text, String message) {
-    Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: const Color(0xFF1E293B),
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(20),
-        content: Text("🎉 $message", style: const TextStyle(color: Color(0xFF00E5FF), fontWeight: FontWeight.bold)),
+            // 📊 लाइव स्टेट्स कार्ड्स
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildStatItem('Total Team', '$totalMembers', Colors.white),
+                _buildStatItem('Directs', '$directReferrals', neonCyan),
+                _buildStatItem('Active', '$activeMembers', neonGreen),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            const Text(
+              'GENEALOGY TREE LIST',
+              style: TextStyle(color: Colors.white60, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1),
+            ),
+            const SizedBox(height: 12),
+
+            // 🌳 लाइव नेटवर्क टीम लिस्ट रेंडरिंग
+            Expanded(
+              child: teamMembers.isEmpty
+                  ? const Center(child: Text('No members in your network yet.', style: TextStyle(color: Colors.white38)))
+                  : ListView.builder(
+                      itemCount: teamMembers.length,
+                      itemBuilder: (context, index) {
+                        final member = teamMembers[index];
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: cardBackground,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: member.isActive ? neonCyan.withOpacity(0.05) : borderTextColor, width: 1),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // 👈 फिक्स किया भाई
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(member.name, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        member.role, 
+                                        style: TextStyle(
+                                          color: member.role == 'Direct Referral' ? neonCyan : const Color(0xFF94A3B8), 
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500
+                                        )
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text('• By: ${member.referredBy}', style: const TextStyle(color: Colors.white38, fontSize: 11)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    member.investment,
+                                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'Courier'),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    member.isActive ? 'ACTIVE' : 'INACTIVE',
+                                    style: TextStyle(
+                                      color: member.isActive ? neonGreen : const Color(0xFF64748B), 
+                                      fontSize: 10, 
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 0.5
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A), // हमारी डार्क थीम
-      appBar: AppBar(
-        title: const Text("Referral & My Team", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-        backgroundColor: const Color(0xFF0F172A),
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+  Widget _buildStatItem(String title, String value, Color color) {
+    return Column(
+      children: [
+        Text(title, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13, fontWeight: FontWeight.w500)),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: TextStyle(color: color, fontSize: 24, fontWeight: FontWeight.bold, fontFamily: 'Courier'),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 💰 Referral Stats Card
-            Card(
-              color: const Color(0xFF1E293B),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Total Referral Earnings", style: TextStyle(color: Colors.white70, fontSize: 14)),
-                        SizedBox(height: 6),
-                        Text("18.45 TAO", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFF00FF9F))),
-                        Text("≈ \$6,850.00", style: TextStyle(color: Colors.white38, fontSize: 12)),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: const Color(0xFF38BDF8).withAlpha(25), shape: BoxShape.circle),
-                      child: const Icon(Icons.monetization_on_rounded, size: 35, color: Color(0xFF00E5FF)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // 🔗 Referral Link Sharing Box
-            const Text("Invite Your Friends", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFF334155)),
-              ),
-              child: Column(
-                children: [
-                  // Code Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Your Referral Code", style: TextStyle(color: Colors.white54, fontSize: 12)),
-                          const SizedBox(height: 4),
-                          Text(referralCode, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                        ],
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.copy_rounded, color: Color(0xFF38BDF8)),
-                        onPressed: () => _copyToClipboard(referralCode, "Referral Code Copied!"),
-                      ),
-                    ],
-                  ),
-                  const Divider(color: Color(0xFF334155), height: 24),
-                  // Link Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Referral Link", style: TextStyle(color: Colors.white54, fontSize: 12)),
-                            SizedBox(height: 4),
-                            Text("https://taoboost.io/register?...", style: TextStyle(color: Colors.white70, fontSize: 14), overflow: TextOverflow.ellipsis),
-                          ],
-                        ),
-                      ),
-                      ElevatedButton.icon(
-                        onPressed: () => _copyToClipboard(referralLink, "Registration Link Copied!"),
-                        icon: const Icon(Icons.share_rounded, size: 16),
-                        label: const Text("Copy"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00E5FF),
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            //👥 Team Statistics Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("My Network Team", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  decoration: BoxDecoration(color: const Color(0xFF334155), borderRadius: BorderRadius.circular(20)),
-                  child: Text("${teamMembers.length} Members", style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // 📋 Team Members List
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: teamMembers.length,
-              itemBuilder: (context, index) {
-                final member = teamMembers[index];
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E293B),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFF334155)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Left side: Name & Level
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: const Color(0xFF334155),
-                            child: Text(member["name"][0], style: const TextStyle(color: Color(0xFF00E5FF), fontWeight: FontWeight.bold)),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(member["name"], style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 4),
-                              Text(member["level"], style: const TextStyle(color: Colors.white54, fontSize: 12)),
-                            ],
-                          ),
-                        ],
-                      ),
-                      // Right side: Staked Amount & Status
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(member["staked"], style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 4),
-                          Text(
-                            member["status"],
-                            style: TextStyle(color: member["color"], fontSize: 11, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }

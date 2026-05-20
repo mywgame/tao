@@ -7,11 +7,18 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // टेस्ट के लिए एक डमी TAO वॉलेट एड्रेस
+    // 🎨 प्रीमियम डार्क नियॉन-सियान थीम कलर्स भाई
+    const neonCyan = Color(0xFF00E5FF);
+    const neonGreen = Color(0xFF00FF9F);
+    const darkBackground = Color(0xFF0F172A);
+    const cardBackground = Color(0xFF1E293B);
+    const borderTextColor = Color(0xFF334155);
+
+    // टेस्ट के लिए एक डमी TAO वॉलेट एड्रेस भाई
     const String walletAddress = "5GsnB...W7q9Xzp8YvM4kRbc2hT5";
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A), // हमारा सिग्नेचर डार्क बैकग्राउंड
+      backgroundColor: darkBackground, 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -21,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         title: const Text(
           'INVESTOR PROFILE',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF38BDF8), letterSpacing: 1.5),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: neonCyan, letterSpacing: 1.5),
         ),
         centerTitle: true,
       ),
@@ -31,7 +38,7 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 👤 अवतार और नाम
+              // 👤 यूजर अवतार और स्टेटस बैज (नियॉन हाइलाइट भाई)
               Center(
                 child: Stack(
                   alignment: Alignment.bottomRight,
@@ -39,19 +46,19 @@ class ProfileScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(4),
                       decoration: const BoxDecoration(
-                        color: Color(0xFF38BDF8),
+                        color: neonCyan,
                         shape: BoxShape.circle,
                       ),
                       child: const CircleAvatar(
                         radius: 50,
-                        backgroundColor: Color(0xFF1E293B),
+                        backgroundColor: cardBackground,
                         child: Icon(Icons.person_rounded, size: 55, color: Colors.white),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
-                      child: const Icon(Icons.bolt, size: 16, color: Color(0xFF0F172A)),
+                      decoration: const BoxDecoration(color: neonGreen, shape: BoxShape.circle),
+                      child: const Icon(Icons.bolt_rounded, size: 16, color: darkBackground),
                     ),
                   ],
                 ),
@@ -59,31 +66,34 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 16),
               const Text(
                 'Alok Kumar',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.5),
               ),
               const SizedBox(height: 4),
               const Text(
                 'Tier: Validator Node Pro',
-                style: TextStyle(fontSize: 14, color: Color(0xFF38BDF8), fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 14, color: neonCyan, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 32),
 
-              // 💳 Bittensor (TAO) Wallet Card
+              // 💳 Bittensor (TAO) Connected Wallet Card ভাই
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: cardBackground,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF334155)),
+                  border: Border.all(color: borderTextColor),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('CONNECTED WALLET', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1)),
-                        Icon(Icons.link_rounded, color: Colors.greenAccent, size: 20),
+                        const Text(
+                          'CONNECTED WALLET', 
+                          style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1),
+                        ),
+                        Icon(Icons.link_rounded, color: neonGreen, size: 20),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -92,7 +102,7 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         const Row(
                           children: [
-                            Icon(Icons.account_balance_wallet_rounded, color: Color(0xFF38BDF8), size: 24),
+                            Icon(Icons.account_balance_wallet_rounded, color: neonCyan, size: 24),
                             SizedBox(width: 12),
                             Text(
                               walletAddress,
@@ -105,9 +115,21 @@ class ProfileScreen extends StatelessWidget {
                           onPressed: () {
                             Clipboard.setData(const ClipboardData(text: "5GsnB...W7q9Xzp8YvM4kRbc2hT5"));
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Wallet Address Copied to Clipboard! 📋'),
-                                duration: Duration(seconds: 1),
+                              SnackBar(
+                                backgroundColor: cardBackground,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                duration: const Duration(seconds: 2),
+                                content: const Row(
+                                  children: [
+                                    Icon(Icons.check_circle_rounded, color: neonGreen, size: 18),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Wallet address copied to clipboard! 📋', // 🎯 प्रोफेशनल इंग्लिश
+                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
                               ),
                             );
                           },
@@ -119,15 +141,16 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // ⚙️ सेटिंग्स लिस्ट
-              _buildSettingTile(Icons.security_rounded, 'Security & 2FA', 'Secure your staking nodes'),
-              _buildSettingTile(Icons.lan_rounded, 'Connected Subnets', 'Subnet 1, Subnet 18 active'),
+              // ⚙️ सेटिंग्स लिस्ट टाइल्स भाई
+              _buildSettingTile(Icons.security_rounded, 'Security & 2FA', 'Secure your staking nodes', neonCyan),
+              _buildSettingTile(Icons.lan_rounded, 'Connected Subnets', 'Subnet 1, Subnet 18 active', neonCyan),
               
               // 🎯 ट्रांजैक्शन हिस्ट्री टाइल (Perfected)
               _buildSettingTile(
                 Icons.history_toggle_off_rounded, 
                 'Transaction History', 
                 'View all reward distributions',
+                neonCyan,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -135,22 +158,28 @@ class ProfileScreen extends StatelessWidget {
                   );
                 },
               ),
-              _buildSettingTile(Icons.help_outline_rounded, 'Support & Docs', 'Bittensor staking guide'),
+              _buildSettingTile(Icons.help_outline_rounded, 'Support & Docs', 'Bittensor staking guide', neonCyan),
               
               const SizedBox(height: 32),
-              // 🚪 लॉगआउट बटन
+              
+              // 🚪 वॉलेट डिस्कनेक्ट बटन (प्रीमियम आउटलाइन लुक)
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // भाई यहाँ अपना वॉलेट डिस्कनेक्ट या लॉगआउट लॉजिक डाल सकते हो
+                  },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
-                      side: const BorderSide(color: Colors.redAccent, width: 1),
+                      side: const BorderSide(color: Colors.redAccent, width: 1.2),
                     ),
                   ),
-                  child: const Text('Disconnect Wallet', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 15)),
+                  child: const Text(
+                    'Disconnect Wallet', 
+                    style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold, fontSize: 15, letterSpacing: 0.3),
+                  ),
                 ),
               ),
             ],
@@ -160,8 +189,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  // 🚀 हेल्पिंग विजेट फंक्शन
-  Widget _buildSettingTile(IconData icon, String title, String subtitle, {VoidCallback? onTap}) {
+  // 🚀 हेल्पिंग विजेट फंक्शन (थीम कलर पैरामीटर के साथ भाई)
+  Widget _buildSettingTile(IconData icon, String title, String subtitle, Color iconColor, {VoidCallback? onTap}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -169,12 +198,12 @@ class ProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF38BDF8)),
+        leading: Icon(icon, color: iconColor),
         title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle, style: const TextStyle(color: Color(0xFF64748B), fontSize: 12)),
+        subtitle: Text(subtitle, style: const TextStyle(color: Color(0xFF64748B), fontSize: 12, fontWeight: FontWeight.w500)),
         trailing: const Icon(Icons.arrow_forward_ios_rounded, color: Color(0xFF334155), size: 14),
         onTap: onTap,
       ),
     );
   }
-} // 🔥 ये रहा वो आख़िरी छुपेरुस्तम ब्रैकेट जो क्लास को बंद कर रहा है!
+}

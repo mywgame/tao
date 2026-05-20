@@ -7,7 +7,7 @@ import 'package:confetti/confetti.dart';
 import 'package:tao_boost/core/theme/app_colors.dart';
 import 'package:tao_boost/core/providers/tao_price_provider.dart';
 import 'package:tao_boost/core/providers/calculator_provider.dart';
-import 'package:tao_boost/core/providers/wallet_provider.dart'; // 👈 वॉलेट प्रोवाइडर इम्पोर्टेड भाई
+import 'package:tao_boost/core/providers/wallet_provider.dart'; 
 import 'package:tao_boost/core/widgets/custom_confetti.dart'; 
 import '../widgets/dashboard_shimmer.dart';
 import 'profile_screen.dart';
@@ -40,7 +40,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget build(BuildContext context) {
     final taoPriceState = ref.watch(taoPriceProvider);
     final calcState = ref.watch(calculatorProvider);
-    final walletState = ref.watch(walletProvider); // 👈 वॉलेट स्टेट लाइव वॉच हो रही है
+    final walletState = ref.watch(walletProvider); 
 
     final double currentTaoPrice = taoPriceState.maybeWhen(
       data: (price) => price,
@@ -54,23 +54,52 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       return buildDashboardShimmer(context);
     }
 
+    // 🎨 Kaspamine Inspired - लक्ज़री नियॉन कलर पैलेट भाई
+    const neonCyan = Color(0xFF00E5FF);
+    const neonGreen = Color(0xFF00FF9F);
+    const darkBackground = Color(0xFF0B0F19); // और ज़्यादा गहरा डीप स्पेस ब्लैक
+    const cardBackground = Color(0xFF131C2E); // डार्क ग्लास सरफेस कलर
+    const borderTextColor = Color(0xFF1E293B); 
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A), 
+      backgroundColor: darkBackground, 
       body: SafeArea(
         child: Stack(
           children: [
+            // ✨ बैकग्राउंड एम्बिएंट ग्लो इफेक्ट
+            Positioned(
+              top: -50,
+              left: -50,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: neonCyan.withOpacity(0.06),
+                ),
+              ),
+            ),
+            
             SingleChildScrollView(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // App Bar Row
+                  // 📱 APP BAR SECTION
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         'TAO BOOST',
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF38BDF8), letterSpacing: 1.5),
+                        style: TextStyle(
+                          fontSize: 22, 
+                          fontWeight: FontWeight.w900, 
+                          color: neonCyan, 
+                          letterSpacing: 2.0,
+                          shadows: [
+                            Shadow(color: neonCyan, blurRadius: 10),
+                          ],
+                        ),
                       ),
                       
                       taoPriceState.when(
@@ -80,7 +109,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       ),
 
                       IconButton(
-                        icon: const Icon(Icons.account_circle_outlined, color: Colors.white, size: 28),
+                        icon: const Icon(Icons.account_circle_outlined, color: Colors.white70, size: 26),
                         onPressed: () {
                           Navigator.of(context).push(
                             PageRouteBuilder(
@@ -94,48 +123,79 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 28),
+                  
+                  // वेलकम हेडर सेक्शन
                   const Text(
-                    'Welcome Back, Investor 👋',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                    'Welcome Back, Investor',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.3),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   const Text(
                     'Monitor your Bittensor staking performance and earnings.',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
+                    style: TextStyle(fontSize: 13, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
        
-                  // Stat Cards Grid (बैलेंस अब प्रोवाइडर से लाइव अपडेट होगा भाई)
+                  // 📊 STAT CARDS GRID (अब 4 रिस्पॉन्सिव और फुली लाइव कार्ड्स भाई!)
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      double cardWidth = constraints.maxWidth > 600 ? (constraints.maxWidth - 40) / 3 : constraints.maxWidth;
+                      // बड़ी स्क्रीन्स पर 2-2 कार्ड्स और मोबाइल पर फुल विड्थ ग्रिड भाई
+                      double cardWidth = constraints.maxWidth > 600 ? (constraints.maxWidth - 16) / 2 : constraints.maxWidth;
                       return Wrap(
-                        spacing: 20,
-                        runSpacing: 20,
+                        spacing: 16,
+                        runSpacing: 16,
                         children: [
                           _buildStatCard(
                             'Total Staked', 
                             '${walletState.stakedBalance.toStringAsFixed(2)} TAO', 
                             '\$${totalStakedInUsdt.toStringAsFixed(2)}', 
-                            Icons.account_balance_wallet, 
+                            Icons.account_balance_wallet_outlined, 
                             cardWidth,
                           ),
-                          _buildStatCard('Current APR', '18.42%', '+1.2% this week', Icons.bolt, cardWidth),
-                          _buildStatCard('Total Earnings', '4.21 TAO', '\$1,566.12', Icons.trending_up, cardWidth),
+                          _buildStatCard(
+                            'Current APR', 
+                            '18.42%', 
+                            '+1.2% this week', 
+                            Icons.bolt_outlined, 
+                            cardWidth,
+                          ),
+                          // 💵 1. उपलब्ध लाइव USDT बैलेंस कार्ड जो रेफ़रल आते ही बढ़ेगा भाई!
+                          _buildStatCard(
+                            'Available USDT', 
+                            '\$${walletState.usdtBalance.toStringAsFixed(2)}', 
+                            'Ready to Stake', 
+                            Icons.monetization_on_outlined, 
+                            cardWidth,
+                          ),
+                          // 🌐 2. लाइव नेटवर्क अर्निंग्स कार्ड जो राहुल वर्मा को जोड़ते ही बढ़ेगा भाई!
+                          _buildStatCard(
+                            'Network Earnings', 
+                            '\$${walletState.networkEarnings.toStringAsFixed(2)} USDT', 
+                            'From Team Tree', 
+                            Icons.trending_up_rounded, 
+                            cardWidth,
+                          ),
                         ],
                       );
                     },
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
 
-                  // Staking Calculator
+                  // 🧮 STAKING CALCULATOR SECTION
                   Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(22),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1E293B),
+                      color: cardBackground,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFF334155), width: 1),
+                      border: Border.all(color: neonCyan.withOpacity(0.15), width: 1),
+                      boxShadow: [
+                        BoxShadow(
+                          color: neonCyan.withOpacity(0.02),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,33 +205,34 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.calculate_outlined, color: Color(0xFF38BDF8), size: 22),
+                                const Icon(Icons.calculate_outlined, color: neonCyan, size: 20),
                                 const SizedBox(width: 8),
                                 const Text(
                                   'Staking Calculator',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.3),
                                 ),
                               ],
                             ),
           
+                            // प्रीमियम पैकेज ड्रॉपडाउन पिल
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF0F172A),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: const Color(0xFF334155)),
+                                color: darkBackground,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: borderTextColor, width: 1.5),
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<StakingPackage>(
                                   value: calcState.selectedPackage,
-                                  dropdownColor: const Color(0xFF0F172A),
-                                  icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF38BDF8)),
+                                  dropdownColor: darkBackground,
+                                  icon: const Icon(Icons.keyboard_arrow_down_rounded, color: neonCyan, size: 18),
                                   items: calcState.availablePackages.map((package) {
                                     return DropdownMenuItem<StakingPackage>(
                                       value: package,
                                       child: Text(
                                         '${package.name} (${package.dailyPercentage}%)',
-                                        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                                       ),
                                     );
                                   }).toList(),
@@ -185,43 +246,52 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _calcController,
-                                keyboardType: TextInputType.number,
-                                style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                  labelText: "Enter TAO Amount",
-                                  labelStyle: const TextStyle(color: Color(0xFF94A3B8)),
-                                  suffixText: "TAO",
-                                  suffixStyle: const TextStyle(color: Colors.white70),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Color(0xFF334155)),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(color: Color(0xFF38BDF8)),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                onChanged: (value) => ref.read(calculatorProvider.notifier).calculate(
-                                  amount: double.tryParse(value) ?? 0.0, 
-                                ),
-                              ),
+                        const SizedBox(height: 20),
+                        
+                        // मॉडर्न इनपुट फील्ड भाई
+                        TextField(
+                          controller: _calcController,
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Courier', fontSize: 16),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: darkBackground.withOpacity(0.5),
+                            labelText: "Enter TAO Amount",
+                            labelStyle: const TextStyle(color: Color(0xFF475569), fontWeight: FontWeight.w500, fontSize: 13),
+                            suffixText: "TAO",
+                            suffixStyle: const TextStyle(color: neonCyan, fontWeight: FontWeight.bold, fontFamily: 'Courier'),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: borderTextColor),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ],
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: neonCyan, width: 1.5),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onChanged: (value) => ref.read(calculatorProvider.notifier).calculate(
+                            amount: double.tryParse(value) ?? 0.0, 
+                          ),
                         ),
-                        const SizedBox(height: 18),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            _buildCalcResult("Daily Est.", "\$${calcState.dailyProfit.toStringAsFixed(2)}"),
-                            _buildCalcResult("Monthly Est.", "\$${calcState.monthlyProfit.toStringAsFixed(2)}"),
-                            _buildCalcResult("Yearly Est.", "\$${calcState.yearlyProfit.toStringAsFixed(2)}"),
-                          ],
+                        const SizedBox(height: 22),
+                        
+                        // एस्टिमेटेड प्रॉफिट रिजल्ट्स
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                          decoration: BoxDecoration(
+                            color: darkBackground.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              _buildCalcResult("Daily Est.", "\$${calcState.dailyProfit.toStringAsFixed(2)}"),
+                              Container(width: 1, height: 25, color: borderTextColor),
+                              _buildCalcResult("Monthly Est.", "\$${calcState.monthlyProfit.toStringAsFixed(2)}"),
+                              Container(width: 1, height: 25, color: borderTextColor),
+                              _buildCalcResult("Yearly Est.", "\$${calcState.yearlyProfit.toStringAsFixed(2)}"),
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -230,18 +300,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   const SizedBox(height: 32),
                   const Text(
                     'Staking Yield History',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 0.3),
                   ),
                   const SizedBox(height: 16),
                   
-                  // Chart Container
+                  // 📈 CHART CONTAINER
                   Container(
-                    height: 260,
-                    padding: const EdgeInsets.all(20),
+                    height: 240,
+                    padding: const EdgeInsets.only(top: 24, bottom: 12, right: 20, left: 10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1E293B),
+                      color: cardBackground,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFF334155), width: 1),
+                      border: Border.all(color: borderTextColor, width: 1),
                     ),
                     child: LineChart(
                       LineChartData(
@@ -264,100 +334,121 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               const FlSpot(6, 18.42),
                             ],
                             isCurved: true,
-                            color: const Color(0xFF38BDF8),
-                            barWidth: 4,
+                            color: neonCyan, 
+                            barWidth: 3.5,
                             isStrokeCapRound: true,
                             dotData: const FlDotData(show: true),
                             belowBarData: BarAreaData(
                               show: true,
-                              color: const Color(0xFF38BDF8).withAlpha(25),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  neonCyan.withOpacity(0.15),
+                                  neonCyan.withOpacity(0.00),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 36),
                   
-                  // 📊 Action Buttons (लॉजिक के साथ फिक्स किया हुआ हिस्सा)
+                  // ⚡ ACTION BUTTONS
                   Row(
                     children: [
+                      // स्टेक TAO बटन
                       Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // 1️⃣ इनपुट फ़ील्ड से टोकन अमाउंट निकालो और डॉलर वैल्यू कैलकुलेट करो
-                            double taoAmount = double.tryParse(_calcController.text) ?? 0.0;
-                            double dollarAmount = taoAmount * currentTaoPrice;
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: neonGreen.withOpacity(0.2), 
+                                blurRadius: 15,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              double taoAmount = double.tryParse(_calcController.text) ?? 0.0;
+                              double dollarAmount = taoAmount * currentTaoPrice;
 
-                            if (taoAmount <= 0) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Please enter a valid TAO amount to stake.'), // ✅ English Text
-                                  backgroundColor: Colors.orange,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                              return;
-                            }
-
-                            // 2️⃣ प्रोवाइडर ACTION कॉल करो और पैकेज वैलिडेशन चेक करो भाई
-                            String result = ref.read(walletProvider.notifier).deductUsdt(
-                                  dollarAmount: dollarAmount,
-                                  selectedPackage: calcState.selectedPackage,
-                                  currentTaoPrice: currentTaoPrice,
-                                );
-
-                            // 3️⃣ रिजल्ट हैंडलिंग
-                            if (result == 'SUCCESS') {
-                              _dashboardConfettiController.play(); // 🎉 पटाखे चलाओ भाई
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Staking completed successfully! 🚀'), // ✅ English Text
-                                  backgroundColor: Colors.green,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            } else if (result == 'BELOW_MIN_LIMIT') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'The entered amount is insufficient for the ${calcState.selectedPackage.name} package.', // ✅ English Text
+                              if (taoAmount <= 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Please enter a valid TAO amount to stake.'),
+                                    backgroundColor: Colors.orange,
+                                    behavior: SnackBarBehavior.floating,
                                   ),
-                                  backgroundColor: Colors.deepOrange,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            } else if (result == 'INSUFFICIENT_FUNDS') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Insufficient USDT balance in your wallet.'), // ✅ English Text
-                                  backgroundColor: Colors.red,
-                                  behavior: SnackBarBehavior.floating,
-                                ),
-                              );
-                            }
-                          }, 
-                          icon: const Icon(Icons.add_circle_outline),
-                          label: const Text('Stake TAO', style: TextStyle(fontWeight: FontWeight.bold)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF38BDF8),
-                            foregroundColor: const Color(0xFF0F172A),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                );
+                                return;
+                              }
+
+                              String result = ref.read(walletProvider.notifier).deductUsdt(
+                                    dollarAmount: dollarAmount,
+                                    selectedPackage: calcState.selectedPackage,
+                                    currentTaoPrice: currentTaoPrice,
+                                  );
+
+                              if (result == 'SUCCESS') {
+                                _dashboardConfettiController.play(); 
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Staking completed successfully! 🚀'),
+                                    backgroundColor: Colors.green,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              } else if (result == 'BELOW_MIN_LIMIT') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'The entered amount is insufficient for the ${calcState.selectedPackage.name} package.',
+                                    ),
+                                    backgroundColor: Colors.deepOrange,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              } else if (result == 'INSUFFICIENT_FUNDS') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Insufficient USDT balance in your wallet.'),
+                                    backgroundColor: Colors.red,
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
+                              }
+                            }, 
+                            icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
+                            label: const Text('STAKE TAO', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, letterSpacing: 1.0)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: neonGreen, 
+                              foregroundColor: const Color(0xFF06111C),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              elevation: 0,
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 16),
+                      
+                      // माई टीम बटन
                       Expanded(
                         child: OutlinedButton.icon(
                           onPressed: () => context.go('/team'), 
-                          icon: const Icon(Icons.group_outlined), 
-                          label: const Text('My Team', style: TextStyle(fontWeight: FontWeight.bold)),
+                          icon: const Icon(Icons.group_outlined, size: 18, color: Colors.white70), 
+                          label: const Text('MY TEAM', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, letterSpacing: 1.0, color: Colors.white)),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
-                            side: const BorderSide(color: Color(0xFF334155)),
+                            side: const BorderSide(color: Color(0xFF334155), width: 1.5),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            backgroundColor: cardBackground.withOpacity(0.4),
                           ),
                         ),
                       ),
@@ -367,7 +458,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             ),
 
-            // Confetti
+            // 🎊 कॉन्फेटी विजेट
             Align(
               alignment: Alignment.topCenter,
               child: CustomConfetti(controller: _dashboardConfettiController),
@@ -378,35 +469,51 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
+  // 🏷️ लाइव प्राइस दिखाने वाला बैज विजेट
   Widget _buildPriceBadge(String label) {
+    const neonCyan = Color(0xFF00E5FF);
+    const neonGreen = Color(0xFF00FF9F);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFF00E5FF).withAlpha(25),
+        color: neonCyan.withOpacity(0.05),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF00E5FF).withAlpha(76)),
+        border: Border.all(color: neonCyan.withOpacity(0.2)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.show_chart, color: Color(0xFF00FF9F), size: 16),
-          const SizedBox(width: 4),
+          const Icon(Icons.circle, color: neonGreen, size: 8), 
+          const SizedBox(width: 6),
           Text(
             label,
-            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+            style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Courier'),
           ),
         ],
       ),
     );
   }
 
+  // 🎴 स्टेट्स कार्ड्स बनाने वाला प्रीमियम हेल्पर विजेट
   Widget _buildStatCard(String title, String value, String subtext, IconData icon, double width) {
+    const neonCyan = Color(0xFF00E5FF);
+    const neonGreen = Color(0xFF00FF9F);
+    const cardBackground = Color(0xFF131C2E);
+    const borderTextColor = Color(0xFF1E293B);
+
     return Container(
       width: width,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: cardBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF334155), width: 1),
+        border: Border.all(color: borderTextColor, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          )
+        ]
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,26 +521,45 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14)),
-              Icon(icon, color: const Color(0xFF38BDF8), size: 22),
+              Text(title, style: const TextStyle(color: Color(0xFF475569), fontSize: 13, fontWeight: FontWeight.w600, letterSpacing: 0.5)),
+              Icon(icon, color: neonCyan.withOpacity(0.8), size: 20),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          Text(subtext, style: const TextStyle(color: Colors.greenAccent, fontSize: 12)),
+          const SizedBox(height: 14),
+          Text(
+            value, 
+            style: const TextStyle(
+              color: Colors.white, 
+              fontSize: 22, 
+              fontWeight: FontWeight.bold, 
+              letterSpacing: 0.5,
+              fontFamily: 'Courier' 
+            )
+          ),
+          const SizedBox(height: 6),
+          Text(subtext, style: const TextStyle(color: neonGreen, fontSize: 11, fontWeight: FontWeight.bold, fontFamily: 'Courier')),
         ],
       ),
     );
   }
 
+  // 🧮 कैल्कुलेटर Result विजेट
   Widget _buildCalcResult(String title, String value) {
+    const neonGreen = Color(0xFF00FF9F);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(title, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
-        const SizedBox(height: 4),
-        Text(value, style: const TextStyle(color: Color(0xFF00FF9F), fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(title, style: const TextStyle(color: Color(0xFF475569), fontSize: 11, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 6),
+        Text(
+          value, 
+          style: const TextStyle(
+            color: neonGreen, 
+            fontSize: 15, 
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Courier'
+          )
+        ),
       ],
     );
   }
