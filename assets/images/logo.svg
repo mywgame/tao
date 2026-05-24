@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="100%" height="100%">
+  <!-- TAO Boost Logo - Fixed for dark background -->
+  <g transform="translate(40, 10)">
+
+    <!-- Geometric Logo Mark -->
+    <g transform="translate(0, 15)">
+      <!-- Stylized T mark - white stroke for dark bg -->
+      <path d="M 10,15 L 70,15 L 70,75" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="square" stroke-linejoin="miter"/>
+      <!-- Cyan accent dot -->
+      <circle cx="40" cy="45" r="7" fill="#00E5FF" />
+    </g>
+
+    <!-- Logo text - white for dark background -->
+    <text x="110" y="78"
+          font-family="system-ui, -apple-system, 'Inter', 'Segoe UI', sans-serif"
+          font-size="70"
+          font-weight="800"
+          letter-spacing="-1px"
+          fill="#FFFFFF">
+      Tao
+    </text>
+
+  </g>
+</svg>
